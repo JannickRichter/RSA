@@ -15,64 +15,71 @@ public class Key {
     }
     
     public void generateKeySet(int bits) {
-
         Prime prime_instance = new Prime();
-        int bitsPerPrime = (int) bits / 2;
-
-        BigInteger p = prime_instance.getPrime(bitsPerPrime);
+        int bitsPerPrime = bits / 2;
 
         while (this.privateKey == null) {
 
+            BigInteger p = prime_instance.getPrime(bitsPerPrime);
             BigInteger q = prime_instance.getPrime(bitsPerPrime);
 
-            if (p.subtract(q).abs().compareTo(BigInteger.TWO.pow(bits - 1)) < 0) continue;
+            System.out.println("Primzahlen:\np: " + p + "\nq: " + q);
 
-            BigInteger n = p.multiply(q);
+            if (p.subtract(q).abs().bitLength() < bitsPerPrime / 2) continue;
 
+            BigInteger n   = p.multiply(q);
             BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 
-            this.privateKey = modularInverse(phi);
-            this.publicKey = n;
+            // gcd(e, phi) == 1 prüfen (hier schon abfangen, dann erst inverse)
+            if (!e.gcd(phi).equals(BigInteger.ONE)) continue;
 
+            BigInteger d = modularInverse(e, phi);
+            if (d == null) continue; // sollte wegen gcd-Check nicht passieren
+
+            this.privateKey = d;
+            this.publicKey  = n;
+
+            System.out.println("Exponent e: " + e);
+            System.out.println("φ(n): " + phi);
+            System.out.println("Public Key: " + n);
+            System.out.println("Private Key: " + d);
         }
-        
     }
 
-    private BigInteger modularInverse(BigInteger phi) {
+    private BigInteger modularInverse(BigInteger e, BigInteger phi) {
 
-        BigInteger e = this.e;
-        BigInteger phiCopy = phi;
+        BigInteger a = e;
+        BigInteger b = phi;
 
         BigInteger x0 = BigInteger.ONE;
         BigInteger x1 = BigInteger.ZERO;
-
         BigInteger y0 = BigInteger.ZERO;
         BigInteger y1 = BigInteger.ONE;
 
-        if (!e.gcd(phiCopy).equals(BigInteger.ONE)) return null;
+        if (!a.gcd(b).equals(BigInteger.ONE)) return null;
 
-        while (!phi.equals(BigInteger.ZERO)) {
-            BigInteger[] qr = e.divideAndRemainder(phi);
+        while (!b.equals(BigInteger.ZERO)) {
+            BigInteger[] qr = a.divideAndRemainder(b);
+            BigInteger q = qr[0], r = qr[1];
 
-            BigInteger q = qr[0];
-            BigInteger r = qr[1];
-
-            e = phi;
-            phi = r;
+            a = b; b = r;
 
             BigInteger nx = x0.subtract(q.multiply(x1));
             BigInteger ny = y0.subtract(q.multiply(y1));
 
-            x0 = x1;
-            y0 = y1;
-            x1 = nx;
-            y1 = ny;
+            x0 = x1; y0 = y1;
+            x1 = nx; y1 = ny;
         }
-        // Jetzt: a = gcd(e,phi) = 1, und x0 ist das Inverse (kann negativ sein)
-        if (!e.equals(BigInteger.ONE)) return null;
-        
-        BigInteger d = x0.mod(phiCopy);
-        return d.signum() < 0 ? d.add(phiCopy) : d;
+
+        if (!a.equals(BigInteger.ONE)) return null;
+
+        BigInteger d = x0.mod(phi);
+        return d.signum() < 0 ? d.add(phi) : d;
     }
 
+    public BigInteger getPublicKey()     { return publicKey; }
+
+    public BigInteger getPublicExp()   { return e; }
+
+    public BigInteger getPrivateKey()  { return privateKey; }
 }
