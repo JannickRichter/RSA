@@ -8,6 +8,8 @@ public class App {
 
         Key key = new Key(4096);
 
+        key.saveKey("test");
+
         /*Prime prime = new Prime(0.00000000000001);
 
         System.out.println("Prime: " + prime.getPrime(512));*/

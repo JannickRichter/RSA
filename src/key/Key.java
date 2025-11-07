@@ -1,6 +1,13 @@
 package key;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
+import java.util.Properties;
+
 import prime.Prime;
 
 public class Key {
@@ -8,10 +15,17 @@ public class Key {
     private BigInteger publicKey = null;
     private BigInteger privateKey = null;
 
-    public BigInteger e = BigInteger.valueOf(65537);
+    private BigInteger p;
+    private BigInteger q;
+
+    private BigInteger e = BigInteger.valueOf(65537);
 
     public Key(int bits) {
         generateKeySet(bits);
+    }
+
+    public Key(String label) {
+        loadKey(label);
     }
     
     public void generateKeySet(int bits) {
@@ -38,6 +52,9 @@ public class Key {
 
             this.privateKey = d;
             this.publicKey  = n;
+
+            this.p = p;
+            this.q = q;
 
             System.out.println("Exponent e: " + e);
             System.out.println("φ(n): " + phi);
@@ -77,9 +94,46 @@ public class Key {
         return d.signum() < 0 ? d.add(phi) : d;
     }
 
-    public BigInteger getPublicKey()     { return publicKey; }
+    public BigInteger getPublicKey() { return publicKey; }
 
-    public BigInteger getPublicExp()   { return e; }
+    public BigInteger getPublicExp() { return e; }
 
-    public BigInteger getPrivateKey()  { return privateKey; }
+    public BigInteger getPrivateKey() { return privateKey; }
+
+    public void saveKey(String label) {
+
+        Properties config = new Properties();
+
+        config.setProperty("p", this.p.toString());
+        config.setProperty("q", this.q.toString());
+        config.setProperty("e", this.e.toString());
+        config.setProperty("public", this.publicKey.toString());
+        config.setProperty("private", this.privateKey.toString());
+
+        try (OutputStream output = new FileOutputStream(label + ".properties")) {
+            config.store(output, label);
+        } catch (IOException e) {
+            System.out.println("Save Failed : Chech if the label is already used.");
+        }
+    }
+
+    public void loadKey(String label) {
+
+        Properties config = new Properties();
+
+        try (InputStream input = new FileInputStream(label + ".properties")) {
+
+            config.load(input);
+
+            this.p = new BigInteger(config.getProperty("p"));
+            this.q = new BigInteger(config.getProperty("q"));
+            this.e = new BigInteger(config.getProperty("e"));
+            this.publicKey = new BigInteger(config.getProperty("public"));
+            this.privateKey = new BigInteger(config.getProperty("private"));
+
+        } catch (IOException e) {
+            System.out.println("Load Failed : Label not found.");
+        }
+
+    }
 }
