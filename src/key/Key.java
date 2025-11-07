@@ -39,7 +39,7 @@ public class Key {
 
             System.out.println("Primzahlen:\np: " + p + "\nq: " + q);
 
-            if (p.subtract(q).abs().bitLength() < bitsPerPrime / 2) continue;
+            if (p.subtract(q).abs().bitLength() < bitsPerPrime - 1) continue;
 
             BigInteger n   = p.multiply(q);
             BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
@@ -99,12 +99,12 @@ public class Key {
 
     public BigInteger getPrivateKey() { return privateKey; }
 
-    public BigInteger[] fullKeySet() {
+    public BigInteger[] getFullKeySet() {
         BigInteger[] fullkeySet = {this.publicKey, this.e, this.privateKey};
         return fullkeySet;
     }
 
-    public BigInteger[] encrytionKeySet() {
+    public BigInteger[] getEncrytionKeySet() {
         BigInteger[] enKeySet = {this.publicKey, this.e};
         return enKeySet;
     }

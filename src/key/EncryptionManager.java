@@ -8,8 +8,11 @@ public class EncryptionManager {
     private BigInteger privateKey;
     private BigInteger e;
 
+    private Key key;
+
     public EncryptionManager(int bits) {
         Key key = new Key(bits);
+        this.key = key;
 
         this.publicKey = key.getPublicKey();
         this.privateKey = key.getPrivateKey();
@@ -18,6 +21,7 @@ public class EncryptionManager {
     
     public EncryptionManager(String label) {
         Key key = new Key(label);
+        this.key = key;
 
         this.publicKey = key.getPublicKey();
         this.privateKey = key.getPrivateKey();
@@ -41,11 +45,11 @@ public class EncryptionManager {
         return msg.modPow(this.e, this.publicKey);
     }
 
-    public BigInteger encrypt(BigInteger msg, BigInteger[] keySet) {
+    public static BigInteger encrypt(BigInteger msg, BigInteger[] keySet) {
         return msg.modPow(keySet[1], keySet[0]);
     }
 
-    public BigInteger encrypt(BigInteger msg, BigInteger publicKey, BigInteger e) {
+    public static BigInteger encrypt(BigInteger msg, BigInteger publicKey, BigInteger e) {
         return msg.modPow(e, publicKey);
     }
 
@@ -53,12 +57,16 @@ public class EncryptionManager {
         return cypher.modPow(this.privateKey, this.publicKey);
     }
 
-    public BigInteger decrypt(BigInteger cypher, BigInteger[] fullKeySet) {
+    public static BigInteger decrypt(BigInteger cypher, BigInteger[] fullKeySet) {
         return cypher.modPow(fullKeySet[2], fullKeySet[0]);
     }
 
-    public BigInteger decrypt(BigInteger cypher, BigInteger publicKey, BigInteger privateKey) {
+    public static BigInteger decrypt(BigInteger cypher, BigInteger publicKey, BigInteger privateKey) {
         return cypher.modPow(privateKey, publicKey);
+    }
+
+    public Key getKey() {
+        return this.key;
     }
 
 }
