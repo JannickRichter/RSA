@@ -19,6 +19,14 @@ public class Prime {
 
         BigInteger candidate = prime;
 
+        if (candidate.equals(BigInteger.TWO)) return true;
+        if (candidate.compareTo(BigInteger.TWO) < 0) return false;
+        if (!candidate.testBit(0)) return false;
+        if (!candidate.gcd(BigInteger.valueOf(3)).equals(BigInteger.ONE)) return false;
+        if (!candidate.gcd(BigInteger.valueOf(5)).equals(BigInteger.ONE)) return false;
+        if (!candidate.gcd(BigInteger.valueOf(7)).equals(BigInteger.ONE)) return false;
+        if (!candidate.gcd(BigInteger.valueOf(11)).equals(BigInteger.ONE)) return false;
+
         double certainty = 1;
         String bin = candidate.subtract(BigInteger.ONE).toString(2);
 
@@ -50,9 +58,10 @@ public class Prime {
 
             System.out.println("a: " + a);
 
-            BigInteger checkMod = a.modPow(u, candidate)
-                                    .subtract(BigInteger.ONE)
-                                    .mod(candidate);
+            BigInteger aModPow = a.modPow(u, candidate);
+
+            BigInteger checkMod = aModPow.subtract(BigInteger.ONE)
+                                            .mod(candidate);
 
             if (checkMod.equals(BigInteger.ZERO)) {
                 certainty *= 0.25;
@@ -60,30 +69,35 @@ public class Prime {
                 System.out.println("Certainty: " + certainty);
             } else {
 
-                int i = -1;
+                BigInteger nMinus1 = candidate.subtract(BigInteger.ONE);
+                BigInteger x = aModPow;
 
-                while (i < t - 1) {
+                if (x.equals(BigInteger.ONE) || x.equals(nMinus1)) {
+                    certainty *= 0.25;
+                    continue certainty;
+                }
 
-                    i += 1;
+                int i = 1;
+                boolean hitNm1 = false;
 
-                    System.out.println("i: " + i);
+                while (i < t) {
+                    x = x.multiply(x).mod(candidate);
 
-                    BigInteger mod = a.modPow(BigInteger.TWO
-                                        .pow(i)
-                                        .multiply(u), candidate)
-                                        .add(BigInteger.ONE)
-                                        .mod(candidate);
+                    System.out.println("    i: " + i);
 
-                    if (mod.equals(BigInteger.ZERO)) {
-                        certainty *= 0.25;
-                        continue certainty;
+                    if (x.equals(nMinus1)) {
+                        hitNm1 = true;
+                        break;
                     }
-
+                    i++;
                 }
 
-                if (i >= t - 1) {
-                    return false;
+                if (hitNm1) {
+                    certainty *= 0.25;
+                    continue certainty;
                 }
+
+                return false;
             }
         }
 
@@ -97,8 +111,9 @@ public class Prime {
 
         while (prime == null) {
 
-            BigInteger candidate = new BigInteger(bits, secureRandom).setBit(bits - 1).setBit(0);
+            BigInteger candidate = new BigInteger(bits, secureRandom).setBit(bits - 1).setBit(0).abs();
             if (candidate.compareTo(BigInteger.valueOf(3)) < 0) continue;
+            if (candidate.compareTo(BigInteger.TWO.pow(bits - 1)) < 0) continue;
 
             if (isPrime(candidate)) prime = candidate;
         }
