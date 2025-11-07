@@ -44,11 +44,10 @@ public class Key {
             BigInteger n   = p.multiply(q);
             BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 
-            // gcd(e, phi) == 1 prüfen (hier schon abfangen, dann erst inverse)
             if (!e.gcd(phi).equals(BigInteger.ONE)) continue;
 
             BigInteger d = modularInverse(e, phi);
-            if (d == null) continue; // sollte wegen gcd-Check nicht passieren
+            if (d == null) continue;
 
             this.privateKey = d;
             this.publicKey  = n;
@@ -99,6 +98,16 @@ public class Key {
     public BigInteger getPublicExp() { return e; }
 
     public BigInteger getPrivateKey() { return privateKey; }
+
+    public BigInteger[] fullKeySet() {
+        BigInteger[] fullkeySet = {this.publicKey, this.e, this.privateKey};
+        return fullkeySet;
+    }
+
+    public BigInteger[] encrytionKeySet() {
+        BigInteger[] enKeySet = {this.publicKey, this.e};
+        return enKeySet;
+    }
 
     public void saveKey(String label) {
 
