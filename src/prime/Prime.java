@@ -30,9 +30,6 @@ public class Prime {
         double certainty = 1;
         String bin = candidate.subtract(BigInteger.ONE).toString(2);
 
-        System.out.println("Candidate: " + candidate.toString());
-        System.out.println("Binary - 1: " + bin);
-
         int t = 0;
         for (int i = bin.length() - 1; i >= 0; i--) {
             if (bin.charAt(i) == '0') t++;
@@ -40,14 +37,10 @@ public class Prime {
         }
         if (t <= 0) return false;
 
-        System.out.println("t: " + t);
-
         String uBin = bin.substring(0, bin.length() - t);
         if (uBin.isEmpty()) return false;
 
         BigInteger u = new BigInteger(uBin, 2);
-
-        System.out.println("u: " + u.toString());
 
         BigInteger a = BigInteger.ONE;
 
@@ -56,8 +49,6 @@ public class Prime {
 
             a = a.add(BigInteger.ONE);
 
-            System.out.println("a: " + a);
-
             BigInteger aModPow = a.modPow(u, candidate);
 
             BigInteger checkMod = aModPow.subtract(BigInteger.ONE)
@@ -65,8 +56,6 @@ public class Prime {
 
             if (checkMod.equals(BigInteger.ZERO)) {
                 certainty *= 0.25;
-
-                System.out.println("Certainty: " + certainty);
             } else {
 
                 BigInteger nMinus1 = candidate.subtract(BigInteger.ONE);
@@ -82,8 +71,6 @@ public class Prime {
 
                 while (i < t) {
                     x = x.multiply(x).mod(candidate);
-
-                    System.out.println("    i: " + i);
 
                     if (x.equals(nMinus1)) {
                         hitNm1 = true;
