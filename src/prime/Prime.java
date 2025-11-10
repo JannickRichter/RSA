@@ -98,9 +98,8 @@ public class Prime {
 
         while (prime == null) {
 
-            BigInteger candidate = new BigInteger(bits, secureRandom).setBit(bits - 1).setBit(0).abs();
+            BigInteger candidate = new BigInteger(bits, secureRandom).setBit(bits - 1).setBit(0);
             if (candidate.compareTo(BigInteger.valueOf(3)) < 0) continue;
-            if (candidate.compareTo(BigInteger.TWO.pow(bits - 1)) < 0) continue;
 
             if (isPrime(candidate)) prime = candidate;
         }
