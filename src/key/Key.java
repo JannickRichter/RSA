@@ -37,8 +37,6 @@ public class Key {
             BigInteger p = prime_instance.getPrime(bitsPerPrime);
             BigInteger q = prime_instance.getPrime(bitsPerPrime);
 
-            System.out.println("Primzahlen:\np: " + p + "\nq: " + q);
-
             if (p.subtract(q).abs().bitLength() < bitsPerPrime - 1) continue;
 
             BigInteger n   = p.multiply(q);
