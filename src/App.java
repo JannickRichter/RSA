@@ -7,9 +7,9 @@ import key.Key;
 public class App {
     public static void main(String[] args) throws Exception {
 
-        Key key = new Key(128);
+        Key key = new Key(2048);
 
-        BigInteger msg = BigInteger.valueOf(143);
+        BigInteger msg = BigInteger.valueOf(7123914523751345803l);
         BigInteger c = EncryptionManager.encrypt(msg, key.getEncrytionKeySet());
 
         System.out.println("Verschlüsselt: " + c);
