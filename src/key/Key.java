@@ -1,12 +1,6 @@
 package key;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.Properties;
 
 import prime.Prime;
 
@@ -15,19 +9,12 @@ public class Key {
     private BigInteger publicKey = null;
     private BigInteger privateKey = null;
 
-    private BigInteger p;
-    private BigInteger q;
-
     private BigInteger e = BigInteger.valueOf(65537);
 
     public Key(int bits) {
         generateKeySet(bits);
     }
 
-    public Key(String label) {
-        loadKey(label);
-    }
-    
     public void generateKeySet(int bits) {
         Prime prime_instance = new Prime();
         int bitsPerPrime = bits / 2;
@@ -49,9 +36,6 @@ public class Key {
 
             this.privateKey = d;
             this.publicKey  = n;
-
-            this.p = p;
-            this.q = q;
 
             System.out.println("Exponent e: " + e);
             System.out.println("φ(n): " + phi);
@@ -97,17 +81,7 @@ public class Key {
 
     public BigInteger getPrivateKey() { return privateKey; }
 
-    public BigInteger[] getFullKeySet() {
-        BigInteger[] fullkeySet = {this.publicKey, this.e, this.privateKey};
-        return fullkeySet;
-    }
-
-    public BigInteger[] getEncrytionKeySet() {
-        BigInteger[] enKeySet = {this.publicKey, this.e};
-        return enKeySet;
-    }
-
-    public void saveKey(String label) {
+    /*public void saveKey(String label) {
 
         Properties config = new Properties();
 
@@ -142,5 +116,5 @@ public class Key {
             System.out.println("Load Failed : Label not found.");
         }
 
-    }
+    }*/
 }

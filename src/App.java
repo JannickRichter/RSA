@@ -1,6 +1,4 @@
 import java.math.BigInteger;
-import java.util.Scanner;
-import prime.Prime;
 import key.RSAEngine;
 import key.Key;
 
