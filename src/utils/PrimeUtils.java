@@ -1,17 +1,17 @@
-package prime;
+package utils;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class Prime {
+public class PrimeUtils {
 
     private double notPrimeCertainty;
 
-    public Prime(double notPrimeCertainty) {
+    public PrimeUtils(double notPrimeCertainty) {
         this.notPrimeCertainty = notPrimeCertainty;
     }
 
-    public Prime() {
+    public PrimeUtils() {
         this.notPrimeCertainty = 0.0000001;
     }
 

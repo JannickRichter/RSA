@@ -2,7 +2,7 @@ package key;
 
 import java.math.BigInteger;
 
-import prime.Prime;
+import utils.PrimeUtils;
 
 public class Key {
 
@@ -16,7 +16,7 @@ public class Key {
     }
 
     public void generateKeySet(int bits) {
-        Prime prime_instance = new Prime();
+        PrimeUtils prime_instance = new PrimeUtils();
         int bitsPerPrime = bits / 2;
 
         while (this.privateKey == null) {
